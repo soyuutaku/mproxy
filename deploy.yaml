@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mproxy
+  name: mproxy-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mproxy
+    spec:
+        containers:
+          - image: nordy/mproxy:latest
+            name: mProxy
+            args: ["-l", "8081",
+                    "-D"]
+            ports: 
+            - containerPort: 8081
+        restartPolicy: OnFailure
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mproxy-service
+  labels:
+    app: mproxy
+spec:
+  ports:
+  - port: 8081
+    targetPort: 8081
+  selector:
+    app: mproxy
